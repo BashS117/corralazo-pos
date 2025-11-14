@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {getFirestore} from 'firebase/firestore';
+import {getFirestore,addDoc,collection,setDoc, doc} from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,3 +23,14 @@ const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+//enviar pedido
+ export const enviarPedido = async (pedidoData) => {
+  console.log(pedidoData)
+  try {
+   return await addDoc(collection(db, "pedidos"), pedidoData);
+    console.log("Pedido guardado con ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error guardando pedido: ", error);
+  }
+};

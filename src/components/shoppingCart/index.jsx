@@ -3,15 +3,31 @@ import { Link } from 'react-router-dom'
 import OrderCart from '../OrderCart'
 import { useContext } from "react";
 import { AppContext } from '../../Context/AppContext';
+import { enviarPedido } from '../../firebase/firebase';
 
 
 const ShoppingCart = ({sum}) => {
 
   const {state}=useContext(AppContext)
 
-   const onClick=() => {
-      handleCheckout(); // Puedes realizar acciones locales adicionales aquí si es necesario
-      window.location.href = whatsappUrl; // Redirigir a WhatsApp
+   // Crear objeto del pedido
+   const crearPedido = () => ({
+    fecha: new Date(),
+    total: sum,
+    items: state.cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+    }))
+  });
+
+  const handleCheckout = async () => {
+    const pedido = crearPedido();
+
+    // 1️⃣ Guardar en Firebase
+    await enviarPedido(pedido);
+
     }
 
 
@@ -44,10 +60,10 @@ const ShoppingCart = ({sum}) => {
       </p>
     
     
-      <button className='w-full bg-[#25d366] py-3 text-white rounded-lg' 
-      // onClick={() => handleCheckout()}
+      <button className='w-full bg-orange py-3 text-white rounded-lg' 
+      onClick={() => handleCheckout()}
       >
-          <input type="submit" value='Enviar a WhatsApp' />
+          <input type="submit" value='Enviar Orden' />
       </button>
     
     </div>
