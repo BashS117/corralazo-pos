@@ -6,13 +6,15 @@ import { AppContext } from '../../Context/AppContext';
 import { enviarPedido } from '../../firebase/firebase';
 
 
-const ShoppingCart = ({sum}) => {
+const ShoppingCart = ({sum,mesa,nota}) => {
 
   const {state}=useContext(AppContext)
 
    // Crear objeto del pedido
    const crearPedido = () => ({
     fecha: new Date(),
+    mesa: mesa,
+    nota: nota,
     total: sum,
     items: state.cart.map(item => ({
       id: item.id,
@@ -27,6 +29,7 @@ const ShoppingCart = ({sum}) => {
 
     // 1️⃣ Guardar en Firebase
     await enviarPedido(pedido);
+    alert("Pedido enviado exitosamente ✔️");
 
     }
 

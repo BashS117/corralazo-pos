@@ -19,54 +19,16 @@ const OrderForm = () => {
   const productsText = productNameandPrice.join(' ');
 
 
-
-//ENVIAR EL PEDIDO
-//   const onSubmit =(data)=>{
-//     console.log('orderFormDATA:',data)
-//     //texto del link para google Maps
-// let googleMapsUrl = `*Google Map:* https://www.google.com/maps/place/${data.direccionprincipal}%2B${data.direccionuno}%2B%2523%2B${data.direcciondos}%2B-%2B${data.direcciontres},%2BCorinto%2BCauca`
-// if(selectedOption==='Consumo Local'){
-// googleMapsUrl='';
-// }
-//     //texto con el nombre y direccion y nota
-//     // const customerNameandAdress =`________________ %0A*Entregar a*: ${data.nombre},%0A*Tipo de Pedido:* ${selectedOption},%0A*Dirección:* ${data.direccionprincipal} ${data.direccionuno} %23${data.direcciondos}-${data.direcciontres}, ${data.barrio} %0A${data.notas?`*Notas:* ${data.notas}`:''}`;
-
-//     let customerNameandAdress = ``;
-
-//     if (selectedOption === 'Domicilio') {
-//       customerNameandAdress = `________________ %0A*Entregar a*: ${data.nombre},%0A*Tipo de Pedido:* ${selectedOption},%0A*Dirección:* ${data.direccionprincipal} ${data.direccionuno} %23${data.direcciondos}-${data.direcciontres}, ${data.barrio} %0A${data.notas?`*Notas:* ${data.notas}`:''}`;
-//     } else {
-//       customerNameandAdress = `________________ %0A*Entregar a*: ${data.nombre},%0A*Tipo de Pedido:* ${selectedOption},%0A ${data.notas?`*Notas:* ${data.notas}`:''}`;
-//     }
-    
-
-//     //texto link a whatsapp
-//     const whatsappUrl = `https://api.whatsapp.com/send?phone=573234754284&text=${googleMapsUrl} %0A*¡Nuevo Pedido!*🛵%0A Restaurante Corralazo %0A*Productos*: %0A ${productsText} %0A*Valor total:* $${sum} %0A ${customerNameandAdress} `;
-
-//     window.location.href = whatsappUrl; // Redirigir a WhatsApp
-
-//   }
-
-  const [selectedOption, setSelectedOption] = useState('Domicilio');
+  const [selectedOption, setSelectedOption] = useState('1');   // Mesa
+  const [note, setNote] = useState("");                        // Nota
 
   const handleSelectChange = (event) => {
-    const value = event.target.value;
-    setSelectedOption(value);
+    setSelectedOption(event.target.value);
+    
   };
   
 
-  const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem("orderFormData");
-    return savedData ? JSON.parse(savedData) : {
-      nombre: "",
-      direccionprincipal: "Cra.",
-      direccionuno: "",
-      direcciondos: "",
-      direcciontres: "",
-      barrio: "",
-      notas: "",
-    };
-  });
+
   
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -79,25 +41,24 @@ const OrderForm = () => {
   return (
     <div className='bg-[#000]/60 rounded-md w-[full] text-left mb-3'>
       <div className='flex flex-col  gap-1 mb-[10px]'>
+           {/* MESA */}
           <label htmlFor="">Mesa:</label>
-         <select onChange={handleSelectChange} value={selectedOption} id=""
-             >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-         </select>
+          <select onChange={handleSelectChange} value={selectedOption}>
+          {Array.from({length: 12}, (_, i) => (
+            <option key={i+1} value={i+1}>{i+1}</option>
+          ))}
+        </select>
+         {/* NOTA DEL PEDIDO */}
+         <label className='mt-3'>Nota (opcional):</label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Ej: Sin cebolla, etc."
+          className='text-black p-1 rounded'
+        ></textarea>
       </div>
 
-      <ShoppingCart sum={sum}/>
+      <ShoppingCart sum={sum} mesa={selectedOption} nota={note}/>
      
     </div>
   )
