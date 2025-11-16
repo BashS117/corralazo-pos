@@ -34,3 +34,11 @@ export const db = getFirestore(app);
     console.error("Error guardando pedido: ", error);
   }
 };
+ export const enviarPedidoaMesa = async (pedidoData) => {
+   // 2. Guardar también dentro de mesas/{mesaId}/pedidos/{pedidoId}
+   const mesaId = pedidoData.mesa; // <-- asegúrate de incluirla en el formulario
+   await setDoc(
+     doc(db, `mesas/${mesaId}`),
+     pedidoData
+   );
+};

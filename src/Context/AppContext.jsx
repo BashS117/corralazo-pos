@@ -101,7 +101,7 @@ useEffect(() => {
 
 
 
-    const reducerObject=(state,payload)=>({
+    const reducerObject=(state,payload={})=>({
         'PANELOPEN':{
             ...state,
             panelOpen: state.selectedCategory !== payload || !state.panelOpen,
@@ -134,6 +134,11 @@ useEffect(() => {
             // Eliminar el producto del carrito si la cantidad es 1
             cart: state.cart.filter(item => (item.id !== payload) || (item.id === payload && item.quantity > 1)),
           },
+          'EMPTY_CART': {
+            ...state,
+            cart: [],
+          },
+
         
     })
 
@@ -152,19 +157,19 @@ console.log("state",state)
 
 //defino acciones relacionadas con el carrito 
 
- const addToCart = (dispatch, item) => {
-    dispatch({ type: 'ADD_TO_CART', payload: item });
-  };
+//  const addToCart = (dispatch, item) => {
+//     dispatch({ type: 'ADD_TO_CART', payload: item });
+//   };
   
  
-// acciones relacionadas con aumentar y reducir la cantida de los productsCarts
-  const incrementQuantity = (dispatch, id) => {
-    dispatch({ type: 'INCREMENT_QUANTITY', payload: id });
-  };
+// // acciones relacionadas con aumentar y reducir la cantida de los productsCarts
+//   const incrementQuantity = (dispatch, id) => {
+//     dispatch({ type: 'INCREMENT_QUANTITY', payload: id });
+//   };
   
-  const decrementQuantity = (dispatch, item) => {
-    dispatch({ type: 'DECREMENT_QUANTITY', payload: item });
-  };
+//   const decrementQuantity = (dispatch, item) => {
+//     dispatch({ type: 'DECREMENT_QUANTITY', payload: item });
+//   };
   const removeFromCart = (dispatch, item) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: item });
   };

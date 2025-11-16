@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import OrderCart from '../OrderCart'
 import { useContext } from "react";
 import { AppContext } from '../../Context/AppContext';
-import { enviarPedido } from '../../firebase/firebase';
+import { enviarPedido,enviarPedidoaMesa } from '../../firebase/firebase';
 
 
 const ShoppingCart = ({sum,mesa,nota}) => {
 
-  const {state}=useContext(AppContext)
+  const {state,dispatch}=useContext(AppContext)
 
    // Crear objeto del pedido
    const crearPedido = () => ({
@@ -23,12 +23,17 @@ const ShoppingCart = ({sum,mesa,nota}) => {
       price: item.price,
     }))
   });
+  const emptyCart = (dispatch) => {
+    dispatch({ type: 'EMPTY_CART' });
+  };
 
   const handleCheckout = async () => {
     const pedido = crearPedido();
 
     // 1️⃣ Guardar en Firebase
     await enviarPedido(pedido);
+    await enviarPedidoaMesa(pedido);
+    emptyCart(dispatch);
     alert("Pedido enviado exitosamente ✔️");
 
     }
