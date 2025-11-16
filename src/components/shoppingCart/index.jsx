@@ -6,7 +6,7 @@ import { AppContext } from '../../Context/AppContext';
 import { enviarPedido,enviarPedidoaMesa } from '../../firebase/firebase';
 
 
-const ShoppingCart = ({sum,mesa,nota}) => {
+const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
 
   const {state,dispatch}=useContext(AppContext)
 
@@ -34,6 +34,7 @@ const ShoppingCart = ({sum,mesa,nota}) => {
     await enviarPedido(pedido);
     await enviarPedidoaMesa(pedido);
     emptyCart(dispatch);
+    setSelectedMesa("")
     alert("Pedido enviado exitosamente ✔️");
 
     }
@@ -69,6 +70,7 @@ const ShoppingCart = ({sum,mesa,nota}) => {
     
     
       <button className='w-full bg-orange py-3 text-white rounded-lg' 
+      disabled={!mesa}
       onClick={() => handleCheckout()}
       >
           <input type="submit" value='Enviar Orden' />

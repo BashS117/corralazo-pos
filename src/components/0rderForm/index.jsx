@@ -23,7 +23,7 @@ const OrderForm = () => {
   // const productsText = productNameandPrice.join(' ');
 
 
-  const [selectedOption, setSelectedOption] = useState('1');   // Mesa
+  const [selectedMesa, setSelectedMesa] = useState('');   // Mesa
   const [note, setNote] = useState("");                        // Nota
   const [mesasOcupadas, setMesasOcupadas] = useState([]);
 
@@ -37,7 +37,7 @@ const OrderForm = () => {
   }, []);
   
   // const handleSelectChange = (event) => {
-  //   setSelectedOption(event.target.value);
+  //   setSelectedMesa(event.target.value);
     
   // };
   
@@ -61,13 +61,13 @@ const OrderForm = () => {
   {[1,2,3,4,5,6,7,8,9,10,11,12].map((num) => {
 
     const ocupada = mesasOcupadas.includes(num);
-    const seleccionada = selectedOption == num;
+    const seleccionada = selectedMesa == num;
 
     return (
       <button
         key={num}
         type="button"
-        onClick={() => !ocupada && setSelectedOption(num)} // no dejar seleccionar mesa ocupada
+        onClick={() => !ocupada && setSelectedMesa(num)} // no dejar seleccionar mesa ocupada
         className={`
           py-2 rounded-md border text-sm font-medium
           ${ocupada ? "bg-primary text-white border-red-700 cursor-not-allowed": seleccionada ? "bg-orange text-white border-orange"
@@ -91,7 +91,7 @@ const OrderForm = () => {
         ></textarea>
       </div>
 
-      <ShoppingCart sum={sum} mesa={selectedOption} nota={note}/>
+      <ShoppingCart sum={sum} mesa={selectedMesa} setSelectedMesa={setSelectedMesa} nota={note}/>
      
     </div>
   )
