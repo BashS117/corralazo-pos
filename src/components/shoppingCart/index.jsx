@@ -70,7 +70,7 @@ const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
     
     
       <button className='w-full bg-orange py-3 text-white rounded-lg' 
-      disabled={!mesa}
+      disabled={!mesa  || state.cart.length === 0}
       onClick={() => handleCheckout()}
       >
           <input type="submit" value='Enviar Orden' />
