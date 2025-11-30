@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {getFirestore,addDoc,collection,setDoc, doc} from 'firebase/firestore';
+import {getFirestore,addDoc,collection,setDoc, doc,getDocs} from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -41,4 +41,13 @@ export const db = getFirestore(app);
      doc(db, `mesas/${mesaId}`),
      pedidoData
    );
+};
+
+export const obtenerPedidos = async () => {
+  const querySnapshot = await getDocs(collection(db, "pedidos"));
+  
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 };

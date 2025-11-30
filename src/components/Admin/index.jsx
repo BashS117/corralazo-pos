@@ -6,6 +6,7 @@ import { auth, db } from "../../firebase/firebase";
 import LoginForm from "../LoginForm";
 import LogoutButton from "../LogoutButton";
 import ProductManager from "../ProductManager.jsx/ProductManager";
+import Pedidos from "../Pedidos/Pedidos";
 
 const TOTAL_MESAS = 12;
 
@@ -93,6 +94,16 @@ const AdminDashboard = () => {
         >
           Gestionar Productos
         </button>
+        <button
+          onClick={() => setView("pedidos")}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            view === "pedidos" 
+              ? "bg-orange text-white" 
+              : "bg-white shadow border"
+          }`}
+        >
+         Pedidos
+        </button>
       </div>
 
       {/* =========================== VISTA DE MESAS ============================ */}
@@ -161,6 +172,10 @@ const AdminDashboard = () => {
       {/* =========================== PRODUCT MANAGER =========================== */}
       {view === "productos" && (
         <ProductManager />
+      )}
+      {/* =========================== PEDIDOS =========================== */}
+      {view === "pedidos" && (
+        <Pedidos />
       )}
     </div>
   );
