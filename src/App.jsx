@@ -21,7 +21,7 @@ function App() {
       
         <Route path='*' element={<p>Not Found</p>} />
       </Routes>
-      <Order/>
+      
       
     </BrowserRouter>
     </AppProvider>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase";
+import { enviarPedido } from '../../firebase/firebase';
 
 import LoginForm from "../LoginForm";
 import LogoutButton from "../LogoutButton";
@@ -51,6 +52,10 @@ const AdminDashboard = () => {
   // Completar pedido y liberar mesa
   const handleComplete = async (id) => {
     try {
+       // Quitar id antes de enviar
+    const { id: idMesa, ...pedidoSinId } = mesaSeleccionada;
+    await enviarPedido(pedidoSinId);
+    
       await deleteDoc(doc(db, "mesas", String(id)));
       setMesaSeleccionada(null);
       alert(`Mesa ${id} completada`);
@@ -141,7 +146,7 @@ const AdminDashboard = () => {
       )}
 
       {/* ==================== DETALLES DE MESA SELECCIONADA ==================== */}
-      {mesaSeleccionada && (
+      {mesaSeleccionada && view === "mesas" && (
         <div className="mt-8 bg-white shadow-lg p-6 rounded-xl max-w-lg mx-auto border">
           <h2 className="text-2xl font-bold mb-4">
             Mesa {mesaSeleccionada.id}

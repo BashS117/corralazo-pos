@@ -5,6 +5,7 @@ import FilterResult from '../FilterResult'
 import AcordionPanel from '../AcordionPanel'
 import { AppContext } from '../../Context/AppContext'
 import { useContext } from 'react'
+import Order from '../Order'
 const Home = () => {
 
   const {filteredProducts,productsUpdated,secondaryProductsUpdated}= useContext(AppContext)
@@ -32,7 +33,7 @@ const Home = () => {
 
   return (<>
         {renderFilter()}
-
+        <Order/>
   </>
   )
 }

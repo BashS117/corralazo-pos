@@ -31,7 +31,7 @@ const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
     const pedido = crearPedido();
 
     // 1️⃣ Guardar en Firebase
-    await enviarPedido(pedido);
+    // await enviarPedido(pedido);
     await enviarPedidoaMesa(pedido);
     emptyCart(dispatch);
     setSelectedMesa("")
