@@ -72,7 +72,7 @@ const AcordionPanel = ({ products, category, rightPanel }) => {
           :""}
             <button
               onClick={() => addToCart(product)}
-              className="mt-2 bg-white p-2 shadow-md rounded-md hover:-translate-y-1 transition-all duration-300"
+              className="mt-2 bg-white p-2 text-primary shadow-md rounded-md hover:-translate-y-1 transition-all duration-300"
             >
               🛒Agregar
             </button>
