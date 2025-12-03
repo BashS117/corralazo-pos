@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, doc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { collection, doc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase";
 import { enviarPedido } from '../../firebase/firebase';
 
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
        // Quitar id antes de enviar
     const { id: idMesa, ...pedidoSinId } = mesaSeleccionada;
     await enviarPedido(pedidoSinId);
-    
+
       await deleteDoc(doc(db, "mesas", String(id)));
       setMesaSeleccionada(null);
       alert(`Mesa ${id} completada`);
@@ -64,6 +64,61 @@ const AdminDashboard = () => {
       alert("Error al completar pedido");
     }
   };
+// ELIMINAR PRODUCTO en la vista de detalles de la mesa
+  const eliminarItemDeMesa = async (idMesa, indexItem) => {
+    try {
+      const mesaRef = doc(db, "mesas", String(idMesa));
+  
+      // Obtener la mesa seleccionada
+      const itemsActualizados = mesaSeleccionada.items.filter((_, i) => i !== indexItem);
+  
+      // Si después de eliminar no quedan productos, simplemente borra toda la mesa
+      if (itemsActualizados.length === 0) {
+        await deleteDoc(mesaRef);
+        setMesaSeleccionada(null);
+        return;
+      }
+  
+     // Recalcular total actualizado
+    const nuevoTotal = itemsActualizados.reduce((acc, item) => {
+      return acc + item.price * item.quantity * 1000;
+    }, 0);
+
+    // Actualizar Firebase
+    await updateDoc(mesaRef, {
+      items: itemsActualizados,
+      total: nuevoTotal
+    });
+
+    // Actualizar estado local
+    setMesaSeleccionada(prev => ({
+      ...prev,
+      items: itemsActualizados,
+      total: nuevoTotal
+    }));
+  
+    } catch (error) {
+      console.error("Error eliminando item:", error);
+    }
+  };
+  
+
+  const imprimirTicket = () => {
+    const ticket = document.getElementById("ticket");
+  
+    if (!ticket) return;
+  
+    // Mostrar el ticket temporalmente
+    ticket.style.display = "block";
+  
+    window.print();
+  
+    // Ocultar después de imprimir
+    setTimeout(() => {
+      ticket.style.display = "none";
+    }, 300);
+  };
+  
 
   if (!user) return <LoginForm onLogin={setUser} />;
 
@@ -157,13 +212,28 @@ const AdminDashboard = () => {
           </p>
 
           <h3 className="font-semibold mb-2">Productos:</h3>
-          <ul className="list-disc ml-5">
+          <ul className="ml-5 space-y-2">
             {mesaSeleccionada.items?.map((item, i) => (
-              <li key={i}>
-                {item.name} — {item.quantity}
+              <li key={i} className="flex justify-between items-center">
+         <span>
+  {item.name} (V/U: ${item.price}) x {item.quantity} =  
+  ${ (item.price * item.quantity*1000) }
+</span>
+
+
+                <button
+                  onClick={() => eliminarItemDeMesa(mesaSeleccionada.id, i)}
+                  className="bg-primary text-white text-xs px-2 py-1 rounded"
+                >
+                  X
+                </button>
               </li>
             ))}
           </ul>
+
+          <p className="mb-3 text-gray-700">
+            <strong>Valor total:</strong> {mesaSeleccionada.total}
+          </p>
 
           <button
             onClick={() => handleComplete(mesaSeleccionada.id)}
@@ -171,8 +241,41 @@ const AdminDashboard = () => {
           >
             Completar y liberar mesa
           </button>
+          <button
+            onClick={imprimirTicket}
+            className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg w-full"
+          >
+            Imprimir Ticket
+          </button>
+
         </div>
       )}
+
+      {/* TICKET OCULTO PARA IMPRESIÓN */}
+<div id="ticket" style={{ display: "none" }}>
+  {mesaSeleccionada && (
+    <div style={{ width: "58mm", paddingLeft: "20px", fontSize: "21px" ,display: "flex", flexDirection: "column"}}>
+      <strong style={{ textAlign: "center", marginBottom: "10px" }}>
+        Ticket de Pedido
+      </strong>
+
+      <strong style={{textAlign: "left"}}>Productos:</strong>
+      <ul style={{ paddingLeft: "5px", textAlign: "left", fontWeight:"bold"}}>
+        {mesaSeleccionada.items?.map((item, i) => (
+          <li  key={i}>
+          {item.name} <br/>(V/U:${item.price}) x {item.quantity} =  ${item.price*item.quantity*1000} 
+          <p>--------</p>
+          </li>
+        ))}
+      </ul>
+
+      <p style={{textAlign: "left", fontWeight:"bold"}}><strong>Valor total:</strong> ${mesaSeleccionada.total || 0}</p>
+      <p style={{textAlign: "left"}}><strong>Mesa #:</strong> {mesaSeleccionada.id}</p>
+      <p style={{textAlign: "left"}}><strong>Notas:</strong> {mesaSeleccionada.nota || "Ninguna"}</p>
+    </div>
+  )}
+</div>
+
 
       {/* =========================== PRODUCT MANAGER =========================== */}
       {view === "productos" && (

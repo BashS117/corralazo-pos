@@ -46,3 +46,56 @@
 .read-the-docs {
   color: #888;
 }
+@media print {
+
+  /* --- CONFIGURACIÓN DE PÁGINA --- */
+  @page {
+    size: auto;               /* Ajusta al tamaño del contenido */
+    margin: 0;                /* Sin márgenes */
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* --- OCULTAR TODO MENOS EL TICKET --- */
+  body * {
+    visibility: hidden !important;
+  }
+
+  #ticket,
+  #ticket * {
+    visibility: visible !important;
+  }
+
+  #ticket {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    width: 58mm;               /* Tamaño típico del rollo térmico */
+    padding: 0;
+  }
+
+  /* --- MÁXIMA CALIDAD DE TEXTO --- */
+  #ticket * {
+    font-family: "Courier New", monospace !important; /* Texto 100% nítido */
+    color: #000 !important;                           /* Negro verdadero */
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+
+    /* Forzar sin anti-aliasing (evita punticos) */
+    -webkit-font-smoothing: none !important;
+    font-smooth: never !important;
+
+    /* Renderizar el texto como vectores nítidos */
+    text-rendering: geometricPrecision !important;
+
+    /* Evita píxeles feos */
+    image-rendering: pixelated !important;
+
+    line-height: 1.2 !important; /* Para que no se vea aplastado */
+    font-size: 22px !important;  /* Óptimo para impresoras térmicas */
+  }
+}
