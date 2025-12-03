@@ -15,7 +15,7 @@ const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
     fecha: new Date(),
     mesa: mesa,
     nota: nota,
-    total: sum,
+    total: Number(sum)*1000,
     items: state.cart.map(item => ({
       id: item.id,
       name: item.name,

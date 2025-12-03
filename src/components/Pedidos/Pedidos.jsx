@@ -123,6 +123,9 @@ const handleDeleteAll = async () => {
       alert("❌ Hubo un error al borrar los pedidos");
     }
   };
+
+  const totalFiltrado = filtered.reduce((acc, p) => acc + p.total, 0);
+
   
 
   return (
@@ -176,6 +179,15 @@ const handleDeleteAll = async () => {
 </button>
 
       </div>
+      <div className="bg-white p-4 rounded-lg shadow text-xl font-bold mb-6">
+  Total vendido ({ 
+    filterType === "day" ? "hoy" :
+    filterType === "week" ? "esta semana" :
+    filterType === "month" ? "este mes" :
+    "todos"
+  }):  
+  <span className="text-green-600"> ${totalFiltrado.toLocaleString("es-CO")} </span>
+</div>
 
       {/* PEDIDOS */}
 

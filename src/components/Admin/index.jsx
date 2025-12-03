@@ -52,6 +52,7 @@ const AdminDashboard = () => {
   // Completar pedido y liberar mesa
   const handleComplete = async (id) => {
     try {
+      imprimirTicket()
        // Quitar id antes de enviar
     const { id: idMesa, ...pedidoSinId } = mesaSeleccionada;
     await enviarPedido(pedidoSinId);
@@ -235,15 +236,15 @@ const AdminDashboard = () => {
             <strong>Valor total:</strong> {mesaSeleccionada.total}
           </p>
 
-          <button
+          {/* <button
             onClick={() => handleComplete(mesaSeleccionada.id)}
             className="mt-6 bg-orange text-white px-4 py-2 rounded-lg w-full"
           >
             Completar y liberar mesa
-          </button>
+          </button> */}
           <button
-            onClick={imprimirTicket}
-            className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg w-full"
+            onClick={() => handleComplete(mesaSeleccionada.id)}
+            className="mt-3 bg-orange text-white px-4 py-2 rounded-lg w-full"
           >
             Imprimir Ticket
           </button>
