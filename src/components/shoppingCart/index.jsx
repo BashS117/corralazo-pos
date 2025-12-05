@@ -6,7 +6,7 @@ import { AppContext } from '../../Context/AppContext';
 import { enviarPedido,enviarPedidoaMesa } from '../../firebase/firebase';
 
 
-const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
+const ShoppingCart = ({sum,mesa,setSelectedMesa,nota,mesera,setNote}) => {
 
   const {state,dispatch}=useContext(AppContext)
 
@@ -15,6 +15,7 @@ const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
     fecha: new Date(),
     mesa: mesa,
     nota: nota,
+    mesera: mesera,
     total: Number(sum)*1000,
     items: state.cart.map(item => ({
       id: item.id,
@@ -30,11 +31,12 @@ const ShoppingCart = ({sum,mesa,setSelectedMesa,nota}) => {
   const handleCheckout = async () => {
     const pedido = crearPedido();
 
-    // 1️⃣ Guardar en Firebase
+    // 1️⃣ Guardar mesa en Firebase
     // await enviarPedido(pedido);
     await enviarPedidoaMesa(pedido);
     emptyCart(dispatch);
     setSelectedMesa("")
+    setNote("")
     alert("Pedido enviado exitosamente ✔️");
 
     }

@@ -235,6 +235,9 @@ const AdminDashboard = () => {
           <p className="mb-3 text-gray-700">
             <strong>Valor total:</strong> {mesaSeleccionada.total}
           </p>
+          <p className="mb-3 text-gray-700">
+          <strong>Mesero/a:</strong> {mesaSeleccionada.mesera}
+          </p>
 
           {/* <button
             onClick={() => handleComplete(mesaSeleccionada.id)}
@@ -272,6 +275,7 @@ const AdminDashboard = () => {
 
       <p style={{textAlign: "left", fontWeight:"bold"}}><strong>Valor total:</strong> ${mesaSeleccionada.total || 0}</p>
       <p style={{textAlign: "left"}}><strong>Mesa #:</strong> {mesaSeleccionada.id}</p>
+      <p style={{textAlign: "left"}}><strong>Mesero/a:</strong> {mesaSeleccionada.mesera}</p>
       <p style={{textAlign: "left"}}><strong>Notas:</strong> {mesaSeleccionada.nota || "Ninguna"}</p>
     </div>
   )}

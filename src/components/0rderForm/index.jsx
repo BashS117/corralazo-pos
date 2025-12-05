@@ -25,6 +25,7 @@ const OrderForm = () => {
 
   const [selectedMesa, setSelectedMesa] = useState('');   // Mesa
   const [note, setNote] = useState("");                        // Nota
+  const [mesera, setMesera] = useState("");                        // Nota
   const [mesasOcupadas, setMesasOcupadas] = useState([]);
 
   useEffect(() => {
@@ -87,11 +88,20 @@ const OrderForm = () => {
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Ej: Sin cebolla, etc."
-          className='text-black p-1 rounded'
+          className='text-black p-1 rounded min-h-[40px] max-h-[200px] resize-none overflow-auto'
+        ></textarea>
+        
+         {/* NOMBRE MESERA */}
+         <label className='mt-1'>Mesera:</label>
+        <textarea
+          value={mesera}
+          onChange={(e) => setMesera(e.target.value)}
+          
+          className='text-black h-[28px] p-1 rounded'
         ></textarea>
       </div>
 
-      <ShoppingCart sum={sum} mesa={selectedMesa} setSelectedMesa={setSelectedMesa} nota={note}/>
+      <ShoppingCart sum={sum} mesa={selectedMesa} setSelectedMesa={setSelectedMesa} nota={note} setNote={setNote} mesera={mesera} />
      
     </div>
   )
