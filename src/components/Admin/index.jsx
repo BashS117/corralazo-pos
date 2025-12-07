@@ -32,22 +32,80 @@ const AdminDashboard = () => {
 
   const mesaMasAntigua = mesas.length > 0 ? mesas[0].id : null;
 
+
+
+
+  const [lastUpdate, setLastUpdate] = useState(Date.now());
+  const [listener, setListener] = useState(null);
+  const [retryDelay, setRetryDelay] = useState(1000); // empieza en 1s
+  // Función que crea el listener con reconexión
+  const iniciarListenerMesas = () => {
+    console.log("📡 Iniciando listener de MESAS...");
+  
+    const unsubscribe = onSnapshot(
+      collection(db, "mesas"),
+      (snapshot) => {
+        // rebajar delay al mínimo si recibimos datos → conexión viva
+        setRetryDelay(1000);
+        setLastUpdate(Date.now());
+  
+        const mesasActivas = snapshot.docs.map((d) => ({
+          id: Number(d.id),
+          ...d.data(),
+        }));
+  
+        mesasActivas.sort((a, b) => (a.fecha || 0) - (b.fecha || 0));
+  
+        setMesas(mesasActivas);
+      },
+      (error) => {
+        console.error("❌ Listener MESAS falló:", error);
+      }
+    );
+  
+    return unsubscribe;
+  };
+  
+
   // Escucha cambios en las mesas en tiempo real
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "mesas"), (snapshot) => {
-      const mesasActivas = snapshot.docs.map((d) => ({
-        id: Number(d.id),
-        ...d.data(),
-      }));
-        // Ordenar por fecha de llegada
-    mesasActivas.sort((a, b) => (a.fecha || 0) - (b.fecha || 0));
-
-    setMesas(mesasActivas);
-  });
-
-
-    return () => unsubscribe();
+    const unsub = iniciarListenerMesas();
+    setListener(() => unsub);
+  
+    return () => unsub && unsub();
   }, []);
+
+  // WATCHDOG + AUTO-RECONEXIÓN SIN RECARGAR
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const diff = Date.now() - lastUpdate;
+  
+      if (diff > 15000) { // 15 segundos sin señales = listener muerto
+        console.warn("⚠ Listener de MESAS inactivo. Intentando reconectar…");
+  
+        if (listener) {
+          try {
+            listener(); // cerrar listener viejo
+          } catch (e) {
+            console.log("Error cerrando listener viejo:", e);
+          }
+        }
+  
+        // iniciar listener nuevo
+        const nuevo = iniciarListenerMesas();
+        setListener(() => nuevo);
+  
+        // aumentar delay para la próxima vez (backoff)
+        setRetryDelay((d) => Math.min(d * 2, 30000)); // máximo 30s
+  
+        console.log(`⏳ Próximo chequeo en ${retryDelay}ms`);
+      }
+    }, retryDelay);
+  
+    return () => clearInterval(interval);
+  }, [lastUpdate, retryDelay, listener]);
+  
+  
 
   // Completar pedido y liberar mesa
   const handleComplete = async (id) => {
